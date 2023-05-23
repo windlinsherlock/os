@@ -30,6 +30,22 @@ static int __init mem_module_init(void)
     // 释放kmallocmem1和kmallocmem2
     kfree(kmallocmem2);
     kfree(kmallocmem1);
+    // 使用二分法求解出可分配内存大小的上限
+    size_t l = 0,r = (size_t)-1
+    while (l < r){
+        size_t mid = (l+r) >> 1;
+        if (l+r % 2)    mid += 1;
+        // 分配mid字节给kmallocmem3
+        kmallocmem3 = kmalloc(mid, GFP_KERNEL);
+        if (!kmallocmem3){
+            r = mid-1;
+        }
+        else {
+            kfree(kmallocmem3);
+            l = mid;
+        }
+    }
+    printk(KERN_INFO "The max size to malloc is: %zu\n", )
     /*
     kmallocmem3 = kmalloc((size_t)-1, GFP_KERNEL); // 分配允许的最大内存大小给kmallocmem3
     if (!kmallocmem3) {
